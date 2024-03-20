@@ -1,0 +1,71 @@
+openapi: 3.0.3
+info:
+  title: Price API
+  description: API to retrieve applicable prices for products
+  version: 1.0.4
+servers:
+  - url: 'http://localhost:8080/priceConsult/'
+    description: Development server
+paths:
+  /prices:
+    get:
+      summary: Get applicable price
+      description: Retrieve the applicable price for a given product and brand on a specific date.
+      operationId: getApplicablePrice
+      parameters:
+        - name: applicationDate
+          in: query
+          required: true
+          description: The date when the price needs to be applied, in YYYY-MM-DD format.
+          schema:
+            type: string
+            format: date
+        - name: productId
+          in: query
+          required: true
+          description: The product identifier.
+          schema:
+            type: integer
+        - name: brandId
+          in: query
+          required: true
+          description: The brand identifier.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response with the applicable price details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicablePriceResponse'
+        '400':
+          description: Bad request. One or more parameters are invalid.
+        '404':
+          description: Not found. The specified resource does not exist.
+components:
+  schemas:
+    ApplicablePriceResponse:
+      type: object
+      properties:
+        productId:
+          type: integer
+          description: The product identifier.
+        brandId:
+          type: integer
+          description: The brand identifier.
+        priceList:
+          type: integer
+          description: The price list identifier that was applicable.
+        startDate:
+          type: string
+          format: date-time
+          description: The start date of the price's validity period.
+        endDate:
+          type: string
+          format: date-time
+          description: The end date of the price's validity period.
+        price:
+          type: number
+          format: float
+          description: The applicable price.
